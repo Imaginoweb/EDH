@@ -278,8 +278,8 @@
         eventNameLabel = "Autre";
       }
 
-      // Préparation du JSON pour l'API (selon le swagger)
-      const bodyData = {
+      // Premier JSON pour l'API "Evenement_Inscription"
+      const bodyData1 = {
         "IdEvent": parseInt(typeEventValue),       // L'entier du type
         "EventName": eventNameLabel,              // Le nom textuel
         "Date": dateEventValue,                   // Format YYYY-MM-DD
@@ -295,30 +295,63 @@
         "Optin_Whatsapp": optinWhatsappValue
       };
 
+      // Deuxième JSON pour l'API "Inscirption_Evenement"
+      // (basé sur le schéma Inscription_Evenement-write)
+      const bodyData2 = {
+        "prenom": firstNameValue,
+        "nom": lastNameValue,
+        "email": emailValue,
+        "evenement": {
+          "titre": eventNameLabel,
+          "date": dateEventValue,      // YYYY-MM-DD
+          "heure": "10:00",            // Heure par défaut (ou un champ dédié)
+          "lieu": campusValue,
+          "type": "présentiel"         // Ou "en ligne", selon vos besoins
+        },
+        "statut_inscription": "confirmée",
+        "date_inscription": new Date().toISOString()
+      };
+
       try {
-        // Appel API (POST) avec la clé X-API-KEY
-        const response = await fetch(
+        // 1) Premier appel : enregistrement
+        const response1 = await fetch(
           "https://francois-sandbox.saas.imagino.com/ucdapi/Evenement_Inscription/2/Evenement",
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "X-API-KEY": "2a79b8c4-b270-4a61-8b64-437ccea75586" // ta clé API
+              "X-API-KEY": "2a79b8c4-b270-4a61-8b64-437ccea75586" // Ta clé API
             },
-            body: JSON.stringify(bodyData)
+            body: JSON.stringify(bodyData1)
           }
         );
 
-        if (!response.ok) {
-          // En cas d'erreur HTTP (ex: 4xx, 5xx)
-          throw new Error("Réponse réseau non valide : " + response.status);
+        if (!response1.ok) {
+          throw new Error("Erreur 1er appel API : " + response1.status);
         }
+        const data1 = await response1.json();
+        console.log("Réponse 1er appel API : ", data1);
 
-        // On suppose un JSON de confirmation
-        const data = await response.json();
-        console.log("Réponse API : ", data);
+        // 2) Deuxième appel : déclencher la campagne (Inscirption_Evenement/1)
+        const response2 = await fetch(
+          "https://francois-sandbox.saas.imagino.com/ucdapi/Inscirption_Evenement/1",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-API-KEY": "2a79b8c4-b270-4a61-8b64-437ccea75586" // Même clé ou clé différente
+            },
+            body: JSON.stringify(bodyData2)
+          }
+        );
 
-        // Afficher un message de succès
+        if (!response2.ok) {
+          throw new Error("Erreur 2ème appel API : " + response2.status);
+        }
+        const data2 = await response2.json();
+        console.log("Réponse 2ème appel API : ", data2);
+
+        // Afficher un message de succès global
         messageSuccess.style.display = "block";
         messageError.style.display = "none";
 
