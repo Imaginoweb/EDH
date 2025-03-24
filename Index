@@ -133,7 +133,7 @@
     <!-- En-tête (header) avec le logo EFJ -->
     <header>
       <!-- Remplace cette source par ton image -->
-      <img class="header-logo" src="images/efj-header.png" 
+      <img class="header-logo" src="logo.png" 
            alt="EFJ, L'école du nouveau journalisme" />
     </header>
 
@@ -198,7 +198,7 @@
     <!-- Pied de page (footer) avec les logos EDH -->
     <footer>
       <!-- Remplace cette source par ton image “multi-écoles” -->
-      <img class="footer-logos" src="images/edh-footer.png" 
+      <img class="footer-logos" src="Footer.png" 
            alt="Logos des écoles du Groupe EDH" />
       <p>© 2025 EFJ – L’école du nouveau journalisme</p>
     </footer>
