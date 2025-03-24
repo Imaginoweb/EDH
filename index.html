@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Inscription Journée Portes Ouvertes EFJ</title>
+  <title>Inscription à un Événement EFJ</title>
   <style>
     /* ----- Reset minimal ----- */
     * {
@@ -137,12 +137,41 @@
            alt="EFJ, L'école du nouveau journalisme" />
     </header>
 
-    <!-- Formulaire d'inscription JPO -->
+    <!-- Formulaire d'inscription Événement -->
     <section class="form-section">
-      <h2>Inscription à la Journée Portes Ouvertes</h2>
-      <p>Remplissez le formulaire ci-dessous pour réserver votre place :</p>
+      <h2>Inscription à un Événement</h2>
+      <p>Choisissez un type d’événement, une date, et renseignez vos coordonnées :</p>
 
-      <form id="jpoForm">
+      <form id="eventForm">
+        <!-- Type d'événement (entier) -->
+        <div class="form-group">
+          <label for="typeEvent">Type d'événement *</label>
+          <select id="typeEvent" name="typeEvent" required>
+            <option value="">-- Sélectionnez un type --</option>
+            <option value="1">Journée Portes Ouvertes</option>
+            <option value="2">Atelier Découverte</option>
+            <option value="3">Masterclass</option>
+          </select>
+        </div>
+
+        <!-- Date de l'événement -->
+        <div class="form-group">
+          <label for="dateEvent">Date de l'événement *</label>
+          <input type="date" id="dateEvent" name="dateEvent" required />
+        </div>
+
+        <!-- Ecole (campus) -->
+        <div class="form-group">
+          <label for="campus">Campus souhaité *</label>
+          <select id="campus" name="campus" required>
+            <option value="">-- Sélectionnez un campus --</option>
+            <option value="Paris">Paris</option>
+            <option value="Bordeaux">Bordeaux</option>
+            <option value="Lyon">Lyon</option>
+          </select>
+        </div>
+
+        <!-- Coordonnées -->
         <div class="form-group">
           <label for="firstName">Prénom *</label>
           <input type="text" id="firstName" name="firstName" required/>
@@ -158,32 +187,13 @@
           <input type="email" id="email" name="email" required/>
         </div>
 
-        <!-- Champ "phone" présent dans le formulaire, mais non envoyé à l'API -->
+        <!-- Champ "phone" (non envoyé à l'API) -->
         <div class="form-group">
           <label for="phone">Téléphone</label>
           <input type="tel" id="phone" name="phone"/>
         </div>
 
-        <div class="form-group">
-          <label for="campus">Campus souhaité *</label>
-          <select id="campus" name="campus" required>
-            <option value="">-- Sélectionnez un campus --</option>
-            <option value="Paris">Paris</option>
-            <option value="Bordeaux">Bordeaux</option>
-            <option value="Lyon">Lyon</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="dateJPO">Date de la JPO *</label>
-          <select id="dateJPO" name="dateJPO" required>
-            <option value="">-- Sélectionnez une date --</option>
-            <option value="2025-04-01">Mardi 1er Avril 2025</option>
-            <option value="2025-04-15">Mardi 15 Avril 2025</option>
-            <option value="2025-04-29">Mardi 29 Avril 2025</option>
-          </select>
-        </div>
-
+        <!-- Bouton d'envoi -->
         <button type="submit" class="btn-submit">Je m’inscris</button>
 
         <!-- Messages de feedback -->
@@ -208,30 +218,44 @@
   <!-- Script JS -->
   <script>
     // Cibler le formulaire et les messages
-    const jpoForm = document.getElementById('jpoForm');
+    const eventForm = document.getElementById('eventForm');
     const messageSuccess = document.getElementById('messageSuccess');
     const messageError = document.getElementById('messageError');
 
-    jpoForm.addEventListener('submit', async function(event) {
+    eventForm.addEventListener('submit', async function(event) {
       event.preventDefault(); // Empêche le rechargement de la page
 
       // Récupérer les données du formulaire
-      const firstNameValue = document.getElementById('firstName').value;
-      const lastNameValue  = document.getElementById('lastName').value;
-      const emailValue     = document.getElementById('email').value;
-      const campusValue    = document.getElementById('campus').value;
-      const dateValue      = document.getElementById('dateJPO').value;
+      const typeEventValue  = document.getElementById('typeEvent').value; // "1", "2", "3"
+      const dateEventValue  = document.getElementById('dateEvent').value; // ex: "2025-04-15"
+      const campusValue     = document.getElementById('campus').value;
+      const firstNameValue  = document.getElementById('firstName').value;
+      const lastNameValue   = document.getElementById('lastName').value;
+      const emailValue      = document.getElementById('email').value;
+      // phoneValue (non utilisé pour l'API)
+
+      // Déterminer le label de l'événement (EventName) selon l'ID choisi
+      let eventNameLabel = "";
+      if (typeEventValue === "1") {
+        eventNameLabel = "Journée Portes Ouvertes";
+      } else if (typeEventValue === "2") {
+        eventNameLabel = "Atelier Découverte";
+      } else if (typeEventValue === "3") {
+        eventNameLabel = "Masterclass";
+      } else {
+        eventNameLabel = "Autre";
+      }
 
       // Préparation du JSON pour l'API (selon le swagger)
       const bodyData = {
-        "IdEvent": 0, // ou null si tu préfères
-        "CreationDate": new Date().toISOString(), // ex: "2025-03-24T10:00:00Z"
-        "Date": dateValue,                       // format YYYY-MM-DD
-        "Ecole": campusValue,                    // campus = Ecole
+        "IdEvent": parseInt(typeEventValue),      // L'entier du type
+        "EventName": eventNameLabel,             // Le nom textuel
+        "Date": dateEventValue,                  // Format YYYY-MM-DD
+        "Ecole": campusValue,                    // ex: "Paris"
         "Email": emailValue,
-        "EventName": "JPO",                      // ou "Journée Portes Ouvertes"
         "firstName": firstNameValue,
-        "lastName": lastNameValue
+        "lastName": lastNameValue,
+        "CreationDate": new Date().toISOString() // ex: "2025-03-24T10:00:00Z"
       };
 
       try {
@@ -262,7 +286,7 @@
         messageError.style.display = "none";
 
         // Réinitialiser le formulaire si nécessaire
-        jpoForm.reset();
+        eventForm.reset();
 
       } catch (error) {
         console.error("Erreur lors de l’appel API : ", error);
