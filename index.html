@@ -76,6 +76,16 @@
       border-color: #009999;
     }
 
+    /* ----- Cases à cocher ----- */
+    .checkbox-group {
+      margin-bottom: 15px;
+    }
+    .checkbox-group label {
+      display: inline-block;
+      margin-right: 20px;
+      font-weight: normal;
+    }
+
     /* ----- Bouton ----- */
     .btn-submit {
       background-color: #009999;
@@ -193,6 +203,24 @@
           <input type="tel" id="phone" name="phone"/>
         </div>
 
+        <!-- Opt-ins -->
+        <div class="checkbox-group">
+          <label>
+            <input type="checkbox" id="optinEmail" name="optinEmail" />
+            J’accepte de recevoir des informations par Email
+          </label>
+
+          <label>
+            <input type="checkbox" id="optinSMS" name="optinSMS" />
+            J’accepte de recevoir des informations par SMS
+          </label>
+
+          <label>
+            <input type="checkbox" id="optinWhatsapp" name="optinWhatsapp" />
+            J’accepte de recevoir des informations par WhatsApp
+          </label>
+        </div>
+
         <!-- Bouton d'envoi -->
         <button type="submit" class="btn-submit">Je m’inscris</button>
 
@@ -232,7 +260,11 @@
       const firstNameValue  = document.getElementById('firstName').value;
       const lastNameValue   = document.getElementById('lastName').value;
       const emailValue      = document.getElementById('email').value;
-      // phoneValue (non utilisé pour l'API)
+
+      // Cases à cocher => booléens
+      const optinEmailValue    = document.getElementById('optinEmail').checked; 
+      const optinSMSValue      = document.getElementById('optinSMS').checked;
+      const optinWhatsappValue = document.getElementById('optinWhatsapp').checked;
 
       // Déterminer le label de l'événement (EventName) selon l'ID choisi
       let eventNameLabel = "";
@@ -248,20 +280,25 @@
 
       // Préparation du JSON pour l'API (selon le swagger)
       const bodyData = {
-        "IdEvent": parseInt(typeEventValue),      // L'entier du type
-        "EventName": eventNameLabel,             // Le nom textuel
-        "Date": dateEventValue,                  // Format YYYY-MM-DD
-        "Ecole": campusValue,                    // ex: "Paris"
+        "IdEvent": parseInt(typeEventValue),       // L'entier du type
+        "EventName": eventNameLabel,              // Le nom textuel
+        "Date": dateEventValue,                   // Format YYYY-MM-DD
+        "Ecole": campusValue,                     // ex: "Paris"
         "Email": emailValue,
         "firstName": firstNameValue,
         "lastName": lastNameValue,
-        "CreationDate": new Date().toISOString() // ex: "2025-03-24T10:00:00Z"
+        "CreationDate": new Date().toISOString(), // ex: "2025-03-24T10:00:00Z"
+        
+        // Opt-ins
+        "Optin_Email": optinEmailValue,
+        "Optin_SMS": optinSMSValue,
+        "Optin_Whatsapp": optinWhatsappValue
       };
 
       try {
         // Appel API (POST) avec la clé X-API-KEY
         const response = await fetch(
-          "https://francois-sandbox.saas.imagino.com/ucdapi/Evenement_Inscription/1/Evenement",
+          "https://francois-sandbox.saas.imagino.com/ucdapi/Evenement_Inscription/2/Evenement",
           {
             method: "POST",
             headers: {
