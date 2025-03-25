@@ -105,6 +105,7 @@
         <button type="submit" class="btn-submit">Je m’inscris</button>
         <div id="messageSuccess" class="message success">Votre inscription est confirmée !</div>
         <div id="messageError" class="message error">Oups, une erreur est survenue. Merci de réessayer plus tard.</div>
+        <div id="errorDetail" class="message error" style="display:none"></div>
       </form>
     </section>
 
@@ -114,88 +115,82 @@
     </footer>
   </div>
 
- <script>
-  document.getElementById('eventForm').addEventListener('submit', async function (e) {
-    e.preventDefault();
+  <script>
+    document.getElementById('eventForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
 
-    // Réinitialisation des messages
-    document.getElementById('messageSuccess').style.display = 'none';
-    document.getElementById('messageError').style.display = 'none';
-    document.getElementById('errorDetail').style.display = 'none';
+      document.getElementById('messageSuccess').style.display = 'none';
+      document.getElementById('messageError').style.display = 'none';
+      document.getElementById('errorDetail').style.display = 'none';
 
-    const commonData = {
-      date: document.getElementById('dateEvent').value,
-      campus: document.getElementById('campus').value,
-      email: document.getElementById('email').value,
-      typeEvent: document.getElementById('typeEvent').value,
-      firstName: document.getElementById('firstName').value,
-      lastName: document.getElementById('lastName').value
-    };
+      const commonData = {
+        date: document.getElementById('dateEvent').value,
+        campus: document.getElementById('campus').value,
+        email: document.getElementById('email').value,
+        typeEvent: document.getElementById('typeEvent').value,
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value
+      };
 
-    const payload1 = {
-      CreationDate: new Date().toISOString(),
-      Date: commonData.date,
-      Ecole: commonData.campus,
-      Email: commonData.email,
-      EventName: commonData.typeEvent,
-      IdEvent: 100,
-      Optin_Email: false,
-      Optin_SMS: false,
-      Optin_Whatsapp: false,
-      firstName: commonData.firstName,
-      lastName: commonData.lastName
-    };
+      const payload1 = {
+        CreationDate: new Date().toISOString(),
+        Date: commonData.date,
+        Ecole: commonData.campus,
+        Email: commonData.email,
+        EventName: commonData.typeEvent,
+        IdEvent: 100,
+        Optin_Email: false,
+        Optin_SMS: false,
+        Optin_Whatsapp: false,
+        firstName: commonData.firstName,
+        lastName: commonData.lastName
+      };
 
-    const payload2 = {
-      date_inscription: new Date().toISOString(),
-      email: commonData.email,
-      nom: commonData.lastName,
-      prenom: commonData.firstName,
-      statut_inscription: "inscrit",
-      evenement: {
-        titre: commonData.typeEvent,
-        type: commonData.typeEvent,
-        date: commonData.date,
-        heure: "00:00",
-        lieu: commonData.campus
+      const payload2 = {
+        date_inscription: new Date().toISOString(),
+        email: commonData.email,
+        nom: commonData.lastName,
+        prenom: commonData.firstName,
+        statut_inscription: "inscrit",
+        evenement: {
+          titre: commonData.typeEvent,
+          type: commonData.typeEvent,
+          date: commonData.date,
+          heure: "00:00",
+          lieu: commonData.campus
+        }
+      };
+
+      try {
+        const res1 = await fetch("https://francois-sandbox.saas.imagino.com/ucdapi/Evenement_Inscription/2/Evenement", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-KEY": "2a79b8c4-b270-4a61-8b64-437ccea75586"
+          },
+          body: JSON.stringify(payload1)
+        });
+        if (!res1.ok) throw new Error(`Erreur 1 (Evenement_Inscription): ${res1.status} ${await res1.text()}`);
+
+        const res2 = await fetch("https://francois-sandbox.saas.imagino.com/ucdapi/TriggerInvitation/1/Inscription_Evenement", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-KEY": "2a79b8c4-b270-4a61-8b64-437ccea75586"
+          },
+          body: JSON.stringify(payload2)
+        });
+        if (!res2.ok) throw new Error(`Erreur 2 (TriggerInvitation): ${res2.status} ${await res2.text()}`);
+
+        document.getElementById('messageSuccess').style.display = 'block';
+        document.getElementById('eventForm').reset();
+      } catch (err) {
+        console.error(err);
+        document.getElementById('messageError').style.display = 'block';
+        document.getElementById('errorDetail').textContent = err.message;
+        document.getElementById('errorDetail').style.display = 'block';
       }
-    };
-
-    try {
-      // Appel vers Evenement_Inscription
-      const res1 = await fetch("https://francois-sandbox.saas.imagino.com/ucdapi/Evenement_Inscription/2/Evenement", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-KEY": "2a79b8c4-b270-4a61-8b64-437ccea75586"
-        },
-        body: JSON.stringify(payload1)
-      });
-
-      if (!res1.ok) throw new Error(`Erreur 1 (Evenement_Inscription): ${res1.status} ${await res1.text()}`);
-
-      // Appel vers TriggerInvitation
-      const res2 = await fetch("https://francois-sandbox.saas.imagino.com/ucdapi/TriggerInvitation/1/Inscription_Evenement", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-KEY": "2a79b8c4-b270-4a61-8b64-437ccea75586"
-        },
-        body: JSON.stringify(payload2)
-      });
-
-      if (!res2.ok) throw new Error(`Erreur 2 (TriggerInvitation): ${res2.status} ${await res2.text()}`);
-
-      // Succès si les deux appels passent
-      document.getElementById('messageSuccess').style.display = 'block';
-      this.reset();
-    } catch (err) {
-      console.error(err);
-      document.getElementById('messageError').style.display = 'block';
-      document.getElementById('errorDetail').textContent = err.message;
-      document.getElementById('errorDetail').style.display = 'block';
-    }
-  });
-</script>
+    });
+  </script>
 </body>
 </html>
