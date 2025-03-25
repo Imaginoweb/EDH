@@ -76,9 +76,9 @@
           <label for="typeEvent">Type d'événement *</label>
           <select id="typeEvent" required>
             <option value="">-- Sélectionnez un type --</option>
-            <option value="1">Journée Portes Ouvertes</option>
-            <option value="2">Atelier Découverte</option>
-            <option value="3">Masterclass</option>
+            <option value="Journée Portes Ouvertes">Journée Portes Ouvertes</option>
+            <option value="Atelier Découverte">Atelier Découverte</option>
+            <option value="Masterclass">Masterclass</option>
           </select>
         </div>
         <div class="form-group">
@@ -106,10 +106,6 @@
           <label for="email">Email *</label>
           <input type="email" id="email" required />
         </div>
-        <div class="form-group">
-          <label for="phone">Téléphone</label>
-          <input type="tel" id="phone" />
-        </div>
         <div class="checkbox-group">
           <label><input type="checkbox" id="optinEmail" /> J’accepte de recevoir des informations par Email</label>
           <label><input type="checkbox" id="optinSMS" /> J’accepte de recevoir des informations par SMS</label>
@@ -131,29 +127,16 @@
   <script>
     document.getElementById('eventForm').addEventListener('submit', async function (e) {
       e.preventDefault();
-      const data1 = {
-        IdEvent: parseInt(document.getElementById('typeEvent').value),
-        EventName: document.getElementById('typeEvent').selectedOptions[0].text,
-        Date: document.getElementById('dateEvent').value,
-        Ecole: document.getElementById('campus').value,
-        Email: document.getElementById('email').value,
-        firstName: document.getElementById('firstName').value,
-        lastName: document.getElementById('lastName').value,
-        CreationDate: new Date().toISOString(),
-        Optin_Email: document.getElementById('optinEmail').checked,
-        Optin_SMS: document.getElementById('optinSMS').checked,
-        Optin_Whatsapp: document.getElementById('optinWhatsapp').checked
-      };
 
-      const data2 = {
-        prenom: data1.firstName,
-        nom: data1.lastName,
-        email: data1.Email,
+      const bodyData = {
+        prenom: document.getElementById('firstName').value,
+        nom: document.getElementById('lastName').value,
+        email: document.getElementById('email').value,
         evenement: {
-          titre: data1.EventName,
-          date: data1.Date,
+          titre: document.getElementById('typeEvent').value,
+          date: document.getElementById('dateEvent').value,
           heure: "10:00",
-          lieu: data1.Ecole,
+          lieu: document.getElementById('campus').value,
           type: "présentiel"
         },
         statut_inscription: "confirmée",
@@ -161,19 +144,12 @@
       };
 
       try {
-        const res1 = await fetch("https://francois-sandbox.saas.imagino.com/ucdapi/Evenement_Inscription/2/Evenement", {
+        const response = await fetch("https://francois-sandbox.saas.imagino.com/ucdapi/EDH_Inscription/3", {
           method: "POST",
           headers: { "Content-Type": "application/json", "X-API-KEY": "2a79b8c4-b270-4a61-8b64-437ccea75586" },
-          body: JSON.stringify(data1)
+          body: JSON.stringify(bodyData)
         });
-        if (!res1.ok) throw new Error("Erreur API 1 : " + res1.status);
-
-        const res2 = await fetch("https://francois-sandbox.saas.imagino.com/ucdapi/EDH_Inscription/3", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "X-API-KEY": "2a79b8c4-b270-4a61-8b64-437ccea75586" },
-          body: JSON.stringify(data2)
-        });
-        if (!res2.ok) throw new Error("Erreur API 2 : " + res2.status);
+        if (!response.ok) throw new Error("Erreur API : " + response.status);
 
         document.getElementById('messageSuccess').style.display = 'block';
         document.getElementById('messageError').style.display = 'none';
