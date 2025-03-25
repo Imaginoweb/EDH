@@ -110,11 +110,6 @@
           <label for="phone">Téléphone</label>
           <input type="tel" id="phone" />
         </div>
-        <div class="checkbox-group">
-          <label><input type="checkbox" id="optinEmail" /> J’accepte de recevoir des informations par Email</label>
-          <label><input type="checkbox" id="optinSMS" /> J’accepte de recevoir des informations par SMS</label>
-          <label><input type="checkbox" id="optinWhatsapp" /> J’accepte de recevoir des informations par WhatsApp</label>
-        </div>
         <button type="submit" class="btn-submit">Je m’inscris</button>
         <div id="messageSuccess" class="message success">Votre inscription est confirmée !</div>
         <div id="messageError" class="message error">Oups, une erreur est survenue. Merci de réessayer plus tard.</div>
@@ -128,55 +123,53 @@
     </footer>
   </div>
 
-  <script>
-
+  
+<script>
   document.getElementById('eventForm').addEventListener('submit', async function (e) {
     e.preventDefault();
 
+    document.getElementById('messageSuccess').style.display = 'none';
+    document.getElementById('messageError').style.display = 'none';
+    document.getElementById('errorDetail').style.display = 'none';
+
+    const randomId = Math.floor(Math.random() * 100000) + 1;
+
     const payload = {
-      date_inscription: new Date().toISOString(),
-      email: document.getElementById('email').value,
-      nom: document.getElementById('lastName').value,
-      prenom: document.getElementById('firstName').value,
-      statut_inscription: "inscrit",
-      evenement: {
-        titre: document.getElementById('typeEvent').value,
-        type: document.getElementById('typeEvent').value,
-        date: document.getElementById('dateEvent').value,
-        heure: "00:00",  // Valeur par défaut si l'heure n’est pas demandée
-        lieu: document.getElementById('campus').value
-      }
+      CreationDate: new Date().toISOString(),
+      Date: document.getElementById('dateEvent').value,
+      Ecole: document.getElementById('campus').value,
+      Email: document.getElementById('email').value,
+      EventName: document.getElementById('typeEvent').value,
+      IdEvent: randomId,
+      Optin_Email: false,
+      Optin_SMS: false,
+      Optin_Whatsapp: false,
+      firstName: document.getElementById('firstName').value,
+      lastName: document.getElementById('lastName').value
     };
 
     try {
-      const response = await fetch('https://francois-sandbox.saas.imagino.com/ucdapi/TriggerInvitation/1/Inscription_Evenement', {
-        method: 'POST',
+      const response = await fetch("https://francois-sandbox.saas.imagino.com/ucdapi/Evenement_Inscription/2/Evenement", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'X-API-KEY': '2a79b8c4-b270-4a61-8b64-437ccea75586' // remplace avec ta clé réelle
+          "Content-Type": "application/json",
+          "X-API-KEY": "2a79b8c4-b270-4a61-8b64-437ccea75586"
         },
         body: JSON.stringify(payload)
       });
 
-      if (response.ok) {
-        document.getElementById('messageSuccess').style.display = 'block';
-        document.getElementById('messageError').style.display = 'none';
-        document.getElementById('errorDetail').style.display = 'none';
-        this.reset();
-      } else {
-        const err = await response.text();
-        document.getElementById('messageSuccess').style.display = 'none';
-        document.getElementById('messageError').style.display = 'block';
-        document.getElementById('errorDetail').textContent = err;
-        document.getElementById('errorDetail').style.display = 'block';
-      }
-    } catch (error) {
-      document.getElementById('messageSuccess').style.display = 'none';
+      if (!response.ok) throw new Error("Erreur API : " + response.status + " " + await response.text());
+
+      document.getElementById('messageSuccess').style.display = 'block';
+      document.getElementById('eventForm').reset();
+    } catch (err) {
+      console.error(err);
       document.getElementById('messageError').style.display = 'block';
-      document.getElementById('errorDetail').textContent = error.toString();
+      document.getElementById('errorDetail').textContent = err.message;
       document.getElementById('errorDetail').style.display = 'block';
     }
   });
 </script>
+
 </body>
 </html>
