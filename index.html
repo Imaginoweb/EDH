@@ -2,369 +2,93 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inscription à un Événement EFJ</title>
   <style>
-    /* ----- Reset minimal ----- */
-    * {
-      margin: 0; 
-      padding: 0; 
-      box-sizing: border-box;
-      font-family: "Helvetica Neue", Arial, sans-serif;
-    }
-
     body {
       background-color: #F3F8F7;
+      font-family: "Helvetica Neue", Arial, sans-serif;
       color: #333;
-      line-height: 1.6;
     }
-
-    /* ----- Container global ----- */
     .container {
       max-width: 800px;
       margin: 0 auto;
       padding: 40px 20px;
     }
-
-    /* ----- Header ----- */
-    header {
+    header, footer {
       text-align: center;
       margin-bottom: 40px;
     }
-    header img.header-logo {
-      max-width: 400px; 
-      height: auto;
-    }
-
-    /* ----- Section formulaire ----- */
     .form-section {
-      background-color: #FFFFFF;
+      background-color: #fff;
       border-radius: 8px;
       padding: 30px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-    .form-section h2 {
-      font-size: 1.5rem;
-      color: #00515C; /* Couleur teal EFJ */
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .form-section p {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
     .form-group {
       margin-bottom: 15px;
     }
     .form-group label {
       display: block;
-      margin-bottom: 6px;
       font-weight: 600;
+      margin-bottom: 6px;
     }
-    .form-group input,
-    .form-group select {
+    .form-group input, .form-group select {
       width: 100%;
       padding: 10px;
-      border: 1px solid #CCC;
+      border: 1px solid #ccc;
       border-radius: 4px;
-      font-size: 1rem;
-    }
-    .form-group input:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: #009999;
-    }
-
-    /* ----- Cases à cocher ----- */
-    .checkbox-group {
-      margin-bottom: 15px;
     }
     .checkbox-group label {
-      display: inline-block;
-      margin-right: 20px;
-      font-weight: normal;
+      display: block;
+      margin-bottom: 8px;
     }
-
-    /* ----- Bouton ----- */
     .btn-submit {
       background-color: #009999;
-      color: #fff;
+      color: white;
       padding: 12px 20px;
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 1rem;
-      transition: background-color 0.2s ease;
-      display: block;
-      margin: 0 auto; /* centre le bouton */
+      width: 100%;
     }
-    .btn-submit:hover {
-      background-color: #007F7F;
-    }
-
-    /* ----- Message de feedback ----- */
     .message {
+      display: none;
       margin-top: 20px;
       padding: 10px;
       border-radius: 4px;
-      display: none; /* caché par défaut */
       text-align: center;
     }
-    .message.success {
-      background-color: #DFF8E8;
-      color: #1B5E20;
-    }
-    .message.error {
-      background-color: #FFE6E6;
-      color: #C62828;
-    }
-
-    /* ----- Footer ----- */
-    footer {
-      text-align: center;
-      margin-top: 40px;
-    }
-    footer img.footer-logos {
-      max-width: 700px; 
-      width: 100%;
-      height: auto;
-    }
-    footer p {
-      font-size: 0.9rem;
-      color: #777;
-      margin-top: 10px;
-    }
+    .success { background-color: #DFF8E8; color: #1B5E20; }
+    .error { background-color: #FFE6E6; color: #C62828; }
   </style>
 </head>
 <body>
-
   <div class="container">
-    <!-- En-tête (header) avec le logo EFJ -->
     <header>
-      <!-- Remplace cette source par ton image du logo EFJ -->
-      <img class="header-logo" src="logo.png" 
-           alt="EFJ, L'école du nouveau journalisme" />
+      <img src="logo.png" alt="Logo EFJ" style="max-width: 400px;" />
     </header>
 
-    <!-- Formulaire d'inscription Événement -->
     <section class="form-section">
       <h2>Inscription à un Événement</h2>
-      <p>Choisissez un type d’événement, une date, et renseignez vos coordonnées :</p>
-
       <form id="eventForm">
-        <!-- Type d'événement (entier) -->
         <div class="form-group">
           <label for="typeEvent">Type d'événement *</label>
-          <select id="typeEvent" name="typeEvent" required>
+          <select id="typeEvent" required>
             <option value="">-- Sélectionnez un type --</option>
             <option value="1">Journée Portes Ouvertes</option>
             <option value="2">Atelier Découverte</option>
             <option value="3">Masterclass</option>
           </select>
         </div>
-
-        <!-- Date de l'événement -->
         <div class="form-group">
           <label for="dateEvent">Date de l'événement *</label>
-          <input type="date" id="dateEvent" name="dateEvent" required />
+          <input type="date" id="dateEvent" required />
         </div>
-
-        <!-- Ecole (campus) -->
         <div class="form-group">
           <label for="campus">Campus souhaité *</label>
-          <select id="campus" name="campus" required>
+          <select id="campus" required>
             <option value="">-- Sélectionnez un campus --</option>
             <option value="Paris">Paris</option>
             <option value="Bordeaux">Bordeaux</option>
             <option value="Lyon">Lyon</option>
-          </select>
-        </div>
-
-        <!-- Coordonnées -->
-        <div class="form-group">
-          <label for="firstName">Prénom *</label>
-          <input type="text" id="firstName" name="firstName" required/>
-        </div>
-
-        <div class="form-group">
-          <label for="lastName">Nom *</label>
-          <input type="text" id="lastName" name="lastName" required/>
-        </div>
-
-        <div class="form-group">
-          <label for="email">Email *</label>
-          <input type="email" id="email" name="email" required/>
-        </div>
-
-        <!-- Champ "phone" (non envoyé à l'API) -->
-        <div class="form-group">
-          <label for="phone">Téléphone</label>
-          <input type="tel" id="phone" name="phone"/>
-        </div>
-
-        <!-- Opt-ins -->
-        <div class="checkbox-group">
-          <label>
-            <input type="checkbox" id="optinEmail" name="optinEmail" />
-            J’accepte de recevoir des informations par Email
-          </label>
-
-          <label>
-            <input type="checkbox" id="optinSMS" name="optinSMS" />
-            J’accepte de recevoir des informations par SMS
-          </label>
-
-          <label>
-            <input type="checkbox" id="optinWhatsapp" name="optinWhatsapp" />
-            J’accepte de recevoir des informations par WhatsApp
-          </label>
-        </div>
-
-        <!-- Bouton d'envoi -->
-        <button type="submit" class="btn-submit">Je m’inscris</button>
-
-        <!-- Messages de feedback -->
-        <div id="messageSuccess" class="message success">
-          Votre inscription est confirmée ! Nous avons hâte de vous accueillir.
-        </div>
-        <div id="messageError" class="message error">
-          Oups, une erreur est survenue. Merci de réessayer plus tard.
-        </div>
-      </form>
-    </section>
-
-    <!-- Pied de page (footer) avec les logos EDH -->
-    <footer>
-      <!-- Remplace cette source par ton image “multi-écoles” -->
-      <img class="footer-logos" src="Footer.png" 
-           alt="Logos des écoles du Groupe EDH" />
-      <p>© 2025 EFJ – L’école du nouveau journalisme</p>
-    </footer>
-  </div>
-
-  <!-- Script JS -->
-  <script>
-    // Cibler le formulaire et les messages
-    const eventForm = document.getElementById('eventForm');
-    const messageSuccess = document.getElementById('messageSuccess');
-    const messageError = document.getElementById('messageError');
-
-    eventForm.addEventListener('submit', async function(event) {
-      event.preventDefault(); // Empêche le rechargement de la page
-
-      // Récupérer les données du formulaire
-      const typeEventValue  = document.getElementById('typeEvent').value; // "1", "2", "3"
-      const dateEventValue  = document.getElementById('dateEvent').value; // ex: "2025-04-15"
-      const campusValue     = document.getElementById('campus').value;
-      const firstNameValue  = document.getElementById('firstName').value;
-      const lastNameValue   = document.getElementById('lastName').value;
-      const emailValue      = document.getElementById('email').value;
-
-      // Cases à cocher => booléens
-      const optinEmailValue    = document.getElementById('optinEmail').checked; 
-      const optinSMSValue      = document.getElementById('optinSMS').checked;
-      const optinWhatsappValue = document.getElementById('optinWhatsapp').checked;
-
-      // Déterminer le label de l'événement (EventName) selon l'ID choisi
-      let eventNameLabel = "";
-      if (typeEventValue === "1") {
-        eventNameLabel = "Journée Portes Ouvertes";
-      } else if (typeEventValue === "2") {
-        eventNameLabel = "Atelier Découverte";
-      } else if (typeEventValue === "3") {
-        eventNameLabel = "Masterclass";
-      } else {
-        eventNameLabel = "Autre";
-      }
-
-      // Premier JSON pour l'API "Evenement_Inscription"
-      const bodyData1 = {
-        "IdEvent": parseInt(typeEventValue),       // L'entier du type
-        "EventName": eventNameLabel,              // Le nom textuel
-        "Date": dateEventValue,                   // Format YYYY-MM-DD
-        "Ecole": campusValue,                     // ex: "Paris"
-        "Email": emailValue,
-        "firstName": firstNameValue,
-        "lastName": lastNameValue,
-        "CreationDate": new Date().toISOString(), // ex: "2025-03-24T10:00:00Z"
-        
-        // Opt-ins
-        "Optin_Email": optinEmailValue,
-        "Optin_SMS": optinSMSValue,
-        "Optin_Whatsapp": optinWhatsappValue
-      };
-
-      // Deuxième JSON pour l'API "Inscirption_Evenement"
-      // (basé sur le schéma Inscription_Evenement-write)
-      const bodyData2 = {
-        "prenom": firstNameValue,
-        "nom": lastNameValue,
-        "email": emailValue,
-        "evenement": {
-          "titre": eventNameLabel,
-          "date": dateEventValue,      // YYYY-MM-DD
-          "heure": "10:00",            // Heure par défaut (ou un champ dédié)
-          "lieu": campusValue,
-          "type": "présentiel"         // Ou "en ligne", selon vos besoins
-        },
-        "statut_inscription": "confirmée",
-        "date_inscription": new Date().toISOString()
-      };
-
-      try {
-        // 1) Premier appel : enregistrement
-        const response1 = await fetch(
-          "https://francois-sandbox.saas.imagino.com/ucdapi/Evenement_Inscription/1/Evenement",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-API-KEY": "2a79b8c4-b270-4a61-8b64-437ccea75586" // Ta clé API
-            },
-            body: JSON.stringify(bodyData1)
-          }
-        );
-
-        if (!response1.ok) {
-          throw new Error("Erreur 1er appel API : " + response1.status);
-        }
-        const data1 = await response1.json();
-        console.log("Réponse 1er appel API : ", data1);
-
-        // 2) Deuxième appel : déclencher la campagne (Inscirption_Evenement/1)
-        const response2 = await fetch(
-          "https://francois-sandbox.saas.imagino.com/ucdapi/Inscirption_Evenement/1",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-API-KEY": "2a79b8c4-b270-4a61-8b64-437ccea75586" // Même clé ou clé différente
-            },
-            body: JSON.stringify(bodyData2)
-          }
-        );
-
-        if (!response2.ok) {
-          throw new Error("Erreur 2ème appel API : " + response2.status);
-        }
-        const data2 = await response2.json();
-        console.log("Réponse 2ème appel API : ", data2);
-
-        // Afficher un message de succès global
-        messageSuccess.style.display = "block";
-        messageError.style.display = "none";
-
-        // Réinitialiser le formulaire si nécessaire
-        eventForm.reset();
-
-      } catch (error) {
-        console.error("Erreur lors de l’appel API : ", error);
-        // Afficher le message d'erreur
-        messageError.style.display = "block";
-        messageSuccess.style.display = "none";
-      }
-    });
-  </script>
-</body>
-</html>
