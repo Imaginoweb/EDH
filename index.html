@@ -92,3 +92,97 @@
             <option value="Paris">Paris</option>
             <option value="Bordeaux">Bordeaux</option>
             <option value="Lyon">Lyon</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="firstName">Prénom *</label>
+          <input type="text" id="firstName" required />
+        </div>
+        <div class="form-group">
+          <label for="lastName">Nom *</label>
+          <input type="text" id="lastName" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input type="email" id="email" required />
+        </div>
+        <div class="form-group">
+          <label for="phone">Téléphone</label>
+          <input type="tel" id="phone" />
+        </div>
+        <div class="checkbox-group">
+          <label><input type="checkbox" id="optinEmail" /> J’accepte de recevoir des informations par Email</label>
+          <label><input type="checkbox" id="optinSMS" /> J’accepte de recevoir des informations par SMS</label>
+          <label><input type="checkbox" id="optinWhatsapp" /> J’accepte de recevoir des informations par WhatsApp</label>
+        </div>
+        <button type="submit" class="btn-submit">Je m’inscris</button>
+        <div id="messageSuccess" class="message success">Votre inscription est confirmée !</div>
+        <div id="messageError" class="message error">Oups, une erreur est survenue. Merci de réessayer plus tard.</div>
+      </form>
+    </section>
+
+    <footer>
+      <img src="Footer.png" alt="Logos Groupe EDH" style="max-width: 700px; width: 100%;" />
+      <p>© 2025 EFJ – L’école du nouveau journalisme</p>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('eventForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const data1 = {
+        IdEvent: parseInt(document.getElementById('typeEvent').value),
+        EventName: document.getElementById('typeEvent').selectedOptions[0].text,
+        Date: document.getElementById('dateEvent').value,
+        Ecole: document.getElementById('campus').value,
+        Email: document.getElementById('email').value,
+        firstName: document.getElementById('firstName').value,
+        lastName: document.getElementById('lastName').value,
+        CreationDate: new Date().toISOString(),
+        Optin_Email: document.getElementById('optinEmail').checked,
+        Optin_SMS: document.getElementById('optinSMS').checked,
+        Optin_Whatsapp: document.getElementById('optinWhatsapp').checked
+      };
+
+      const data2 = {
+        prenom: data1.firstName,
+        nom: data1.lastName,
+        email: data1.Email,
+        evenement: {
+          titre: data1.EventName,
+          date: data1.Date,
+          heure: "10:00",
+          lieu: data1.Ecole,
+          type: "présentiel"
+        },
+        statut_inscription: "confirmée",
+        date_inscription: new Date().toISOString()
+      };
+
+      try {
+        const res1 = await fetch("https://francois-sandbox.saas.imagino.com/ucdapi/Evenement_Inscription/2/Evenement", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-API-KEY": "2a79b8c4-b270-4a61-8b64-437ccea75586" },
+          body: JSON.stringify(data1)
+        });
+        if (!res1.ok) throw new Error("Erreur API 1");
+
+        const res2 = await fetch("https://francois-sandbox.saas.imagino.com/ucdapi/Inscription_Evenement/1", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "X-API-KEY": "2a79b8c4-b270-4a61-8b64-437ccea75586" },
+          body: JSON.stringify(data2)
+        });
+        if (!res2.ok) throw new Error("Erreur API 2");
+
+        document.getElementById('messageSuccess').style.display = 'block';
+        document.getElementById('messageError').style.display = 'none';
+        this.reset();
+      } catch (err) {
+        console.error(err);
+        document.getElementById('messageError').style.display = 'block';
+        document.getElementById('messageSuccess').style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
