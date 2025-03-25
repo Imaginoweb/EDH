@@ -118,6 +118,7 @@
         <button type="submit" class="btn-submit">Je m’inscris</button>
         <div id="messageSuccess" class="message success">Votre inscription est confirmée !</div>
         <div id="messageError" class="message error">Oups, une erreur est survenue. Merci de réessayer plus tard.</div>
+        <div id="errorDetail" class="message error" style="display:none"></div>
       </form>
     </section>
 
@@ -160,26 +161,29 @@
       };
 
       try {
-        const res1 = await fetch("https://francois-sandbox.saas.imagino.com/ucdapi/Inscription_Evenement/2/Evenement", {
+        const res1 = await fetch("https://francois-sandbox.saas.imagino.com/ucdapi/Evenement_Inscription/2/Evenement", {
           method: "POST",
           headers: { "Content-Type": "application/json", "X-API-KEY": "2a79b8c4-b270-4a61-8b64-437ccea75586" },
           body: JSON.stringify(data1)
         });
-        if (!res1.ok) throw new Error("Erreur API 1");
+        if (!res1.ok) throw new Error("Erreur API 1 : " + res1.status);
 
-        const res2 = await fetch("https://francois-sandbox.saas.imagino.com/ucdapi/Inscription_Evenement/1", {
+        const res2 = await fetch("https://francois-sandbox.saas.imagino.com/ucdapi/EDH_Inscription/3", {
           method: "POST",
           headers: { "Content-Type": "application/json", "X-API-KEY": "2a79b8c4-b270-4a61-8b64-437ccea75586" },
           body: JSON.stringify(data2)
         });
-        if (!res2.ok) throw new Error("Erreur API 2");
+        if (!res2.ok) throw new Error("Erreur API 2 : " + res2.status);
 
         document.getElementById('messageSuccess').style.display = 'block';
         document.getElementById('messageError').style.display = 'none';
+        document.getElementById('errorDetail').style.display = 'none';
         this.reset();
       } catch (err) {
         console.error(err);
         document.getElementById('messageError').style.display = 'block';
+        document.getElementById('errorDetail').innerText = err.message;
+        document.getElementById('errorDetail').style.display = 'block';
         document.getElementById('messageSuccess').style.display = 'none';
       }
     });
